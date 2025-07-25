@@ -16,6 +16,7 @@ $response = preg_replace('/X-Frame-Options/i', '', $response);
 // LIMPIARLE HEADER Y FOOTER DE CHATWOOT
 $response = preg_replace('/<header[^>]*>.*?<\/header>/is', '', $response);
 $response = preg_replace('/<footer[^>]*>.*?<\/footer>/is', '', $response);
+$response = preg_replace('/<img[^>]*(logo|brand)[^>]*>/i', '', $response);
 
 // FUENTES PARA PERSONALIZAR
 $custom_css = "
@@ -24,25 +25,43 @@ $custom_css = "
     background-color: #f6f7f8 !important;
     font-family: 'Sans-Serif', Arial, Helvetica !important;
   }
-  .app-header, .navbar, .sidebar {
-    display: none !important; /* Oculta barras laterales o menús si los hay */
+  .navbar, .sidebar, .topbar, .branding, .app-header {
+    display: none !important;
   }
-  .main-container, .content {
+  .main-container, .content, .app {
     width: 100% !important;
     max-width: 100% !important;
-    background-color: #f6f7f8 !important;
+    background-color: #ffffff !important;
     padding: 20px !important;
     box-shadow: none !important;
+    border-radius: 12px !important;
   }
   button, .btn {
     border-radius: 8px !important;
     background-color: #F19106 !important;
     color: white !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+  }
+  button:hover, .btn:hover {
+    background-color: #cb6216 !important;
+  }
+  /* Oculta cualquier texto de marca */
+  [class*='powered'], [class*='brand'], [class*='logo'], .footer-text {
+    display: none !important;
+  }
+  /* Espaciado superior para dejar espacio al logo */
+  #custom-logo {
+    display: block;
+    max-width: 280px;
+    margin: 10px auto 20px auto;
   }
 </style>
+<img id='custom-logo' src='https://web2.iabot.com.co/wp-content/uploads/2025/07/HEADER-AF-1.png' alt='Smartbot Logo'>
 ";
 
-// INTECTAR EL CSS </head>
 $response = preg_replace('/<\/head>/i', $custom_css . '</head>', $response, 1);
 
 // ACTIVAR CABECERAS HTTP
