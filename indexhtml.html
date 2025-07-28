@@ -12,14 +12,12 @@
       line-height: 1.5em;
     }
 
-    /* Contenedor principal con flex para layout vertical */
     #wrapper {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
-    /* Header y footer fijos en altura y contexto */
     #header, #footer {
       flex: 0 0 120px;
       background-repeat: no-repeat;
@@ -35,32 +33,26 @@
       top: 0;
       background-image: url("https://web2.iabot.com.co/wp-content/uploads/2025/07/HEADER-AF-1.png");
       background-color: #020303;
-	  background-attachment: scroll;
+      background-attachment: scroll;
     }
 
     #footer {
       bottom: 0;
       background-image: url("https://web2.iabot.com.co/wp-content/uploads/2025/07/FOOTER-AF-1.png");
-	  background-attachment: scroll;
+      background-attachment: scroll;
       background-color: #F6F7F8;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* Ajuste del contenido para que quede entre header y footer */
     main {
       flex: 1 0 auto;
       width: 100%;
+      text-align: center;
+      padding: 40px;
     }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Imágenes posicionadas dentro del header */
     .innertube {
       display: flex;
       justify-content: space-between;
@@ -90,16 +82,90 @@
       </div>
     </header>
 
-    <main>
-
-	  <iframe src="proxy.php" style="width:100%; height:100%; border:none;" scrolling="no">>
-        Iframes no soportados. Use otro navegador.
-      </iframe>
-    </main>
+<main id="chat-panel">
+  <!-- Aquí se integrará el widget como un panel -->
+</main>
 
     <footer id="footer">
       <img class="center-image" src="https://web2.iabot.com.co/wp-content/uploads/2025/07/LOGO-IABOT-FONDOS-CLAROS-1.png" alt="IABOT">
     </footer>
   </div>
+
+
+
+<!-- ✅ Chatwoot en modo panel fijo -->
+<style>
+  #chat-panel {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 240px);
+    overflow: hidden;
+  }
+
+  /* Adaptamos el widget */
+  #chat-panel .woot-widget-holder {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #chat-panel .woot-widget-holder iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+  }
+
+  .woot-widget-bubble {
+    display: none !important;
+  }
+</style>
+
+<script>
+  window.chatwootSettings = {
+    hideMessageBubble: true,
+    locale: "es",
+    type: "expanded_bubble"
+  };
+
+  (function(d, t) {
+    var BASE_URL = "https://iabot-test-chatwoot.yuq1gm.easypanel.host";
+    var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+    g.src = BASE_URL + "/packs/js/sdk.js";
+    s.parentNode.insertBefore(g, s);
+    g.onload = function() {
+      window.chatwootSDK.run({
+        websiteToken: "TU_WEBSITE_TOKEN_AQUI",
+        baseUrl: BASE_URL
+      });
+
+      // ✅ Esperamos que esté listo
+      window.chatwoot.on("ready", function() {
+        console.log("Chatwoot listo");
+
+        // Verificamos si toggle está disponible
+        if (typeof window.chatwootSDK.toggle === "function") {
+          window.chatwootSDK.toggle("open");
+        } else {
+          console.warn("El SDK no está listo para toggle aún");
+        }
+
+        // Mover el widget al <main>
+        setTimeout(function() {
+          var widgetHolder = document.querySelector(".woot-widget-holder");
+          var mainPanel = document.getElementById("chat-panel");
+          if (widgetHolder && mainPanel) {
+            mainPanel.appendChild(widgetHolder);
+          }
+        }, 1000);
+      });
+    };
+  })(document, "script");
+</script>
+
+
 </body>
 </html>
